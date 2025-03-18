@@ -1,0 +1,48 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+*.venv
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# PyCharm project files
+.idea/
+
+# Logs and debugging
+logs/
+*.log
+*.out
+*.err
+
+# Unit test cache
+.pytest_cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# MyPy type checking
+.mypy_cache/
+
+# VS Code settings (optional)
+.vscode/
+
+# Environment variables / Secrets
+.env
+.env.local
+.env.*.local
+*.secrets
+
+# Temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
