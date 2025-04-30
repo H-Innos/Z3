@@ -43,7 +43,9 @@ def test_logand_signed_positive_and_negative():
     x_int, y_int = BV2Int(x, True), BV2Int(y, True)
     con = BV2Int(x & y, True)
 
-    s.add(lx <= x_int, x_int <= ux, ly <= y_int, y_int <= uy, lx >= 0, ly >= 0,
+    s.add(lx <= x_int, x_int <= ux,
+          ly <= y_int, y_int <= uy,
+          ux < 0, ly >= 0,
           Not(And(con >= 0,
           con <= BV2Int(next_power_of_2(Max(x, y)))))
           )

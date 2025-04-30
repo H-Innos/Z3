@@ -2,3 +2,4 @@ from z3 import BitVecVal
 
 BIT_VECTOR_LENGTH = 8
 ONE = BitVecVal(0x1, BIT_VECTOR_LENGTH)
+ZERO = BitVecVal(0x0, BIT_VECTOR_LENGTH)
