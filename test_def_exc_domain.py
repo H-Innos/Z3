@@ -1,7 +1,18 @@
-from z3 import BitVec, BV2Int, Ints, Solver, solve, Not, And, Abs, Int, BitVecs, unsat
+from z3 import BitVec, BV2Int, Ints, Solver, solve, Not, And, Abs, Int, BitVecs, unsat, Implies, BitVecVal, ForAll
 
 from constants import BIT_VECTOR_LENGTH
-from helpers import Max, Min, get_int_bound_from_bits
+from helpers import Max, Min, get_int_bound_from_bits, numbits
+
+def test_numbits_correctness():
+    s = Solver()
+    x = BitVec('x', 32)
+    n = BitVec('n', 32)
+    bits = numbits(x)
+    implication1 = Implies(x >= (BitVecVal(1, 32) << n), bits > n)
+    s.add(BV2Int(n) >= 0,
+          BV2Int(n) <= 32,
+        Not(implication1))
+    assert s.check() == unsat, f'Counterexample:{s.model()} {s.model().eval(bits)}'
 
 def test_logand_exc_exc():
     s = Solver()

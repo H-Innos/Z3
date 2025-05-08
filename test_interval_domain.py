@@ -1,7 +1,8 @@
 from z3 import BitVecs, Ints, BV2Int, Not, unsat, Solver, Int, BitVecVal, And
 
 from constants import BIT_VECTOR_LENGTH
-from helpers import Max, Min, next_power_of_2
+from helpers import Max, Min, min_val_bit_constrained, next_power_of_2
+
 
 def test_logand_unsigned():
     s = Solver()
@@ -27,11 +28,18 @@ def test_logand_signed_both_negative():
     s = Solver()
     x, y = BitVecs("x y", BIT_VECTOR_LENGTH)
     ux, uy = Ints("ux uy")
+    lx, ly = Ints("lx ly")
     x_int, y_int = BV2Int(x, True), BV2Int(y, True)
+    con = BV2Int(x & y, True)
     s.add(ux < 0, uy < 0,
+          x_int >= lx,
           x_int <= ux,
+          y_int >= lx,
           y_int <= uy,
-          Not(BV2Int(x & y, True) <= 0)
+          Not(
+              And(con <= 0,
+              con >= min_val_bit_constrained(Min(lx, ly))
+                  ))
           )
     assert s.check() == unsat, f'Counterexample: {s.model()}'
 
