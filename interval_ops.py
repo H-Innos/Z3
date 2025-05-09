@@ -9,6 +9,6 @@ def interval_meet(i1, i2):
 
 def interval_join(i1, i2):
     lower = Min(i1[0], i2[0])
-    upper = Max(i2[1], i2[1])
+    upper = Max(i1[1], i2[1])
 
     return lower, upper
