@@ -1,8 +1,7 @@
 from z3 import Solver, BitVec, BitVecVal, BV2Int, And, unsat, Not, Abs
-from helpers import Min, Max
+from helpers import Min, Max, interval_join, numbits
 from constants import BIT_VECTOR_LENGTH
-from def_exc.utils import initialize_bit_interval, get_int_bound_from_bits, numbits, get_unsinged_int_bound_from_bits
-from interval_ops import interval_join
+from def_exc.utils import initialize_bit_interval, get_int_bound_from_bits, get_unsinged_int_bound_from_bits
 
 
 def test_logand_exc_exc():
@@ -125,16 +124,7 @@ def test_logand_exc_nneg_def_neg():
 
     s.add(Not(And(con <= result_upper_int, con >= result_lower_int)))
 
-    assert s.check() == unsat, (f'Counterexample:{s.model()}\nx bitrange: [{s.model().eval(BV2Int(x_lower_bit_range))},'
-                                f'{s.model().eval(BV2Int(x_upper_bit_range))}]\n'
-                                f'x intrange: [{s.model().eval(x_lower_int_range)}, '
-                                f'{s.model().eval(x_upper_int_range)}] \n'
-                                f'x = {s.model().eval(BV2Int(x, True))} \n'
-                                f'c = {s.model().eval(BV2Int(c, True))}\n'
-                                f'result bitrange: [{s.model().eval(result_lower)}, {s.model().eval(result_upper)}]\n'
-                                f'result intrange: [{s.model().eval(result_lower_int)}, {s.model().eval(result_upper_int)}]\n'
-                                f'con = {s.model().eval(con)} \n'
-                                f'numbits = {s.model().eval(numbits(c))} \n')
+    assert s.check() == unsat, f'Counterexample: {s.model()}'
 
 def test_logand_exc_def_neg():
     s = Solver()
@@ -157,13 +147,4 @@ def test_logand_exc_def_neg():
         con <= upper
     )))
 
-    assert s.check() == unsat, (f'Counterexample:{s.model()}\nx bitrange: [{s.model().eval(BV2Int(x_lower_bit_range))},'
-                                f'{s.model().eval(BV2Int(x_upper_bit_range))}]\n'
-                                f'x intrange: [{s.model().eval(x_lower_int_range)}, '
-                                f'{s.model().eval(x_upper_int_range)}] \n'
-                                f'x = {s.model().eval(BV2Int(x, True))} \n'
-                                f'c = {s.model().eval(BV2Int(c, True))}\n'
-                                f'result bitrange: [{s.model().eval(-bound)}, {s.model().eval(bound)}]\n'
-                                f'result intrange: [{s.model().eval(lower)}, {s.model().eval(upper)}]\n'
-                                f'con = {s.model().eval(con)} \n'
-                                f'numbits = {s.model().eval(numbits(c))} \n')
+    assert s.check() == unsat, f'Counterexample: {s.model()}'

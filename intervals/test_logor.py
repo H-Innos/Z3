@@ -1,8 +1,9 @@
 from z3 import Solver, BitVecs, BV2Int, unsat, Not, And
 
 from constants import BIT_VECTOR_LENGTH
-from helpers import Max, Min, max_val_bit_constrained, min_val_bit_constrained
+from helpers import Max, Min, max_val_bit_constrained
 from helpers import initialize_interval
+
 
 def test_logor_both_non_negative():
     s = Solver()

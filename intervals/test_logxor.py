@@ -45,10 +45,7 @@ def test_logxor_negative_and_non_negative():
     upper = 0
 
     s.add(Not(And(lower <= xor, xor <= upper)))
-    assert s.check() == unsat, (f'Counterexample: {s.model()} {s.model().eval(BV2Int(lx, True))} {s.model().eval(BV2Int(ux, True))} {s.model().eval(BV2Int(ly, True))} {s.model().eval(BV2Int(uy, True))}\n'
-                                f'x = {s.model().eval(BV2Int(x, True))} y = {s.model().eval(BV2Int(y, True))}\n'
-                                f'xor = {s.model().eval(xor)}\n'
-                                f'{s.model().eval(lower)} 0')
+    assert s.check() == unsat, f'Counterexample: {s.model()}'
 
 def test_logxor_otherwise():
     s = Solver()
@@ -61,7 +58,4 @@ def test_logxor_otherwise():
     upper = BV2Int(Max(Max(max_val_bit_constrained(lx), max_val_bit_constrained(ux)), Max(max_val_bit_constrained(ly), max_val_bit_constrained(uy))), True)
 
     s.add(Not(And(lower <= xor, xor <= upper)))
-    assert s.check() == unsat, (f'Counterexample: {s.model()} {s.model().eval(BV2Int(lx, True))} {s.model().eval(BV2Int(ux, True))} {s.model().eval(BV2Int(ly, True))} {s.model().eval(BV2Int(uy, True))}\n'
-                                f'x = {s.model().eval(BV2Int(x, True))} y = {s.model().eval(BV2Int(y, True))}\n'
-                                f'xor = {s.model().eval(xor)}\n'
-                                f'{s.model().eval(lower)} {s.model().eval(upper)}')
+    assert s.check() == unsat, f'Counterexample: {s.model()}'

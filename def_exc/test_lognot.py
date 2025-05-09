@@ -20,7 +20,4 @@ def test_lognot_exc():
         neg <= upper_int
     )))
 
-    assert s.check() == unsat, (f'Counterexample:\n [{s.model().eval(BV2Int(x_lower_bit_range, True))}, '
-                                f'{s.model().eval(BV2Int(x_upper_bit_range, True))}] \n '
-                                f'x= {s.model().eval(BV2Int(x, True))}'
-                                f'result range: [{s.model().eval(BV2Int(lower_int, True))}, {s.model().eval(BV2Int(upper_int, True))}]\n')
+    assert s.check() == unsat, f'Counterexample: {s.model()}'
