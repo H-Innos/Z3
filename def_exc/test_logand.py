@@ -1,25 +1,31 @@
 from z3 import Solver, BitVec, BitVecVal, BV2Int, And, unsat, Not, Abs
-from helpers import Min, Max, interval_join, numbits
+
 from constants import BIT_VECTOR_LENGTH
 from def_exc.utils import initialize_bit_interval, get_int_bound_from_bits, get_unsinged_int_bound_from_bits
+from helpers import Min, Max, interval_join, numbits
 
 
-def test_logand_exc_exc():
+def test_logand_exc_nneg_exc_nneg():
     s = Solver()
     x = BitVec("x", BIT_VECTOR_LENGTH)
     y = BitVec("y", BIT_VECTOR_LENGTH)
 
-    x_lower_bit_range, x_upper_bit_range, x_lower_int_range, x_upper_int_range = initialize_bit_interval(s, x)
+    x_lower_bit_range, x_upper_bit_range, x_lower_int_range, x_upper_int_range = initialize_bit_interval(s, x, "x")
     y_lower_bit_range, y_upper_bit_range, y_lower_int_range, y_upper_int_range = initialize_bit_interval(s, y, "y")
+    s.add(x_lower_bit_range >= 0, y_lower_bit_range >= 0)
 
-    join_lower, join_upper = interval_join([x_lower_bit_range, x_upper_bit_range],[y_lower_bit_range, y_upper_bit_range])
+    lower = BitVecVal(0, BIT_VECTOR_LENGTH)
 
-    join_lower_int = get_int_bound_from_bits(join_lower)
-    join_upper_int = get_int_bound_from_bits(join_upper)
+    upper = Min(x_upper_bit_range, y_upper_bit_range)
+
+    lower_int = get_int_bound_from_bits(lower)
+    upper_int = get_int_bound_from_bits(upper)
 
     con = BV2Int(x & y, True)
 
-    s.add(Not(And(con <= join_upper_int, con >= join_lower_int)))
+    s.add(
+        Not(And(con <= upper_int, con >= lower_int))
+    )
     assert s.check() == unsat, f'Counterexample: {s.model()}'
 
 def test_logand_exc_exc_either_nneg():
@@ -45,27 +51,22 @@ def test_logand_exc_exc_either_nneg():
     )
     assert s.check() == unsat, f'Counterexample: {s.model()}'
 
-def test_logand_exc_nneg_exc_nneg():
+def test_logand_exc_exc_otherwise():
     s = Solver()
     x = BitVec("x", BIT_VECTOR_LENGTH)
     y = BitVec("y", BIT_VECTOR_LENGTH)
 
-    x_lower_bit_range, x_upper_bit_range, x_lower_int_range, x_upper_int_range = initialize_bit_interval(s, x, "x")
+    x_lower_bit_range, x_upper_bit_range, x_lower_int_range, x_upper_int_range = initialize_bit_interval(s, x)
     y_lower_bit_range, y_upper_bit_range, y_lower_int_range, y_upper_int_range = initialize_bit_interval(s, y, "y")
-    s.add(x_lower_bit_range >= 0, y_lower_bit_range >= 0)
 
-    lower = BitVecVal(0, BIT_VECTOR_LENGTH)
+    join_lower, join_upper = interval_join([x_lower_bit_range, x_upper_bit_range],[y_lower_bit_range, y_upper_bit_range])
 
-    upper = Min(x_upper_bit_range, y_upper_bit_range)
-
-    lower_int = get_int_bound_from_bits(lower)
-    upper_int = get_int_bound_from_bits(upper)
+    join_lower_int = get_int_bound_from_bits(join_lower)
+    join_upper_int = get_int_bound_from_bits(join_upper)
 
     con = BV2Int(x & y, True)
 
-    s.add(
-        Not(And(con <= upper_int, con >= lower_int))
-    )
+    s.add(Not(And(con <= join_upper_int, con >= join_lower_int)))
     assert s.check() == unsat, f'Counterexample: {s.model()}'
 
 def test_logand_exc_nneg_def_nneg():
