@@ -33,15 +33,15 @@ def test_logor_both_negative():
     s.add(Not(And(lower <= dis,dis <= upper)))
     assert s.check() == unsat, f'Counterexample: {s.model()}'
 
-def test_logor_negative_and_non_negative():
+def test_logor_neg_and_either():
     s = Solver()
     x, y = BitVecs("x y", BIT_VECTOR_LENGTH)
     lx, ux = initialize_interval(s, x)
     ly, uy = initialize_interval(s, y, "y")
-    s.add(lx >= 0, uy < 0)
+    s.add(ux < 0, uy >= 0)
 
     dis = BV2Int(x | y, True)
-    lower = BV2Int(Min(lx, ly), True)
+    lower = BV2Int(lx, True)
     upper = 0
 
     s.add(Not(And(lower <= dis, dis <= upper)))
